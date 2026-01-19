@@ -2,14 +2,32 @@ from fastapi import Body, FastAPI
 
 app = FastAPI()
 
-BOOKS = [
-    {'title': 'Title One', 'author': 'Author One', 'category': 'science'},
-    {'title': 'Title Two', 'author': 'Author Two', 'category': 'science'},
-    {'title': 'Title Three', 'author': 'Author Three', 'category': 'history'},
-    {'title': 'Title Four', 'author': 'Author Four', 'category': 'math'},
-    {'title': 'Title Five', 'author': 'Author Five', 'category': 'math'},
-    {'title': 'Title Six', 'author': 'Author Two', 'category': 'math'},
 
+
+class Book:
+    id: int
+    title: str
+    author: str
+    description:str
+    rating: int
+
+    #python constructor
+
+    def __init__(self, id, title, author, description, rating):
+        self.id = id
+        self.title = title
+        self.author = author
+        self.description = description
+        self.rating = rating 
+
+
+BOOKS = [
+    Book(1, 'Computer Science Pro', 'Author One', 'A very nice book', 5),
+    Book(2, 'Be Fast with FastAPI', 'Author One', 'A great book', 5),
+    Book(3, 'Master Endpoints', 'Author One', 'A good book', 5),
+    Book(4, 'HP1', 'Author Two', 'Book Description', 2),
+    Book(5, 'HP2', 'Author Three', 'Book Description', 3),
+    Book(6, 'HP3', 'Author Four', 'Book Description', 1)
 ]
 
 @app.get("/books")
