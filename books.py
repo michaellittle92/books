@@ -12,15 +12,17 @@ class Book:
     author: str
     description:str
     rating: int
+    publish_date: int
 
     #python constructor
 
-    def __init__(self, id, title, author, description, rating):
+    def __init__(self, id, title, author, description, rating, publish_date):
         self.id = id
         self.title = title
         self.author = author
         self.description = description
         self.rating = rating 
+        self.publish_date = publish_date
 
 class BookRequest(BaseModel):
     id: Optional[int] = Field(description="ID is not required on create", default=None)
@@ -28,6 +30,7 @@ class BookRequest(BaseModel):
     author: str = Field(min_length=1)
     description:str = Field(min_length=1, max_length=100)
     rating: int = Field(gt=-1, lt=6)
+    publish_date: int = Field(gt=1000, lt=2050)
 
     model_config = {
         "json_schema_extra":{
@@ -35,18 +38,19 @@ class BookRequest(BaseModel):
                 "title": "New book title",
                 "author": "Example Author",
                 "description": "New Book Description", 
-                "rating": 5
+                "rating": 5,
+                "publish_date": 2000
             }
         }
     }
 
 BOOKS = [
-    Book(1, 'Computer Science Pro', 'Author One', 'A very nice book', 5),
-    Book(2, 'Be Fast with FastAPI', 'Author One', 'A great book', 5),
-    Book(3, 'Master Endpoints', 'Author One', 'A good book', 5),
-    Book(4, 'HP1', 'Author Two', 'Book Description', 2),
-    Book(5, 'HP2', 'Author Three', 'Book Description', 3),
-    Book(6, 'HP3', 'Author Four', 'Book Description', 1)
+    Book(1, 'Computer Science Pro', 'Author One', 'A very nice book', 5, 1990),
+    Book(2, 'Be Fast with FastAPI', 'Author One', 'A great book', 5, 2000),
+    Book(3, 'Master Endpoints', 'Author One', 'A good book', 5, 2000),
+    Book(4, 'HP1', 'Author Two', 'Book Description', 2, 2000),
+    Book(5, 'HP2', 'Author Three', 'Book Description', 3, 2026),
+    Book(6, 'HP3', 'Author Four', 'Book Description', 1, 2026)
 ]
 
 @app.get("/books")
@@ -58,6 +62,14 @@ async def read_book(book_id: int):
     for book in BOOKS:
         if book.id == book_id:
             return book
+        
+@app.get("/boooks/{publish_date}")
+async def read_book_by_publish_date(publish_date: int):
+    books_to_return = []
+    for book in BOOKS:
+        if book.publish_date == publish_date:
+            books_to_return.append(book)
+    return books_to_return
         
 @app.get("/books/")
 async def read_book_by_rating(book_rating: int):
